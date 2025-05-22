@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Find Missing Person</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+ 
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .bg-personify-soft-gray {
+      background-color: #f7f7f7;
+    }
+    .bg-personify-purple {
+      background-color: #6c4fef;
+    }
+    .gradient-bg {
+      background: linear-gradient(to bottom right, #d4c4ff, #6c4fef);
+    }
+
+    /* Loader Enhancement */
+    .spinner {
+      border: 4px solid #f3f3f3; /* Light grey */
+      border-top: 4px solid #6c4fef; /* Purple color */
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+
+    /* Spin animation */
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Loader text styling */
+    .loader-text {
+      font-size: 14px;
+      color: #6c4fef;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen gradient-bg flex flex-col">
+  <!-- Navbar -->
+  <nav class="bg-personify-purple p-4 text-white sticky top-0 z-50">
+    <div class="container mx-auto flex items-center justify-between">
+      <!-- Logo/Title -->
+      <h1 class="text-lg font-semibold">Personify</h1>
+  
+      <!-- Logout Button (Right aligned) -->
+      <a href="{% url 'logout' %}" class="text-white p-2 rounded-lg hover:bg-personify-dark-purple focus:outline-none">
+        <i class="fa-solid fa-sign-out-alt text-white"></i>
+      </a>
+    </div>
+  </nav>
+  
+  
+  
+  
+
+  <main class="container mx-auto px-4 py-8 max-w-4xl flex-grow">
+    <div class="mb-8 text-center">
+      <h1 class="text-3xl font-bold text-center mb-2 text-gray-800">Find Missing Person</h1>
+      <p class="text-gray-600">Upload a photo to search our database for potential matches</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8">
+      <div class="bg-white rounded-lg shadow-lg p-6">
+        <h2 class="text-xl text-center font-semibold mb-2">Upload Search Image</h2>
+    
+        
+
+<div class="mb-4">
+  <input type="file" id="upload-image" class="block w-full text-sm text-gray-700 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-personify-purple focus:border-personify-purple" accept="image/*" />
+</div>
+<button id="upload-btn" class="w-full bg-personify-purple text-white py-2 px-4 rounded-lg hover:bg-personify-purple/80 focus:outline-none focus:ring-2 focus:ring-personify-purple">
+  Upload Image
+</button>
+
+
+        <!-- Enhanced Loader -->
+        <div id="loader" class="mt-4 hidden text-sm text-gray-500 text-center">
+          <div class="spinner"></div>
+          <p class="loader-text">Matching face... please wait.</p>
+        </div>
+      </div>
+
+      <!-- Results Section -->
+      <div id="result-box" class="bg-white rounded-lg shadow-lg p-6 hidden">
+        <h2 class="text-xl font-semibold mb-4 text-center">Search Result</h2>
+        <div id="result-content" class="text-gray-800 space-y-2">
+          <!-- Results will be injected here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- No Match Message -->
+    <div id="no-match" class="mt-8 text-center text-gray-600 text-lg hidden">
+      😞 No match found in the database.
+    </div>
+  </main>
+
+  <!-- Script -->
+  <script>
+    const uploadBtn = document.getElementById("upload-btn");
+    const fileInput = document.getElementById("upload-image");
+    const resultBox = document.getElementById("result-box");
+    const resultContent = document.getElementById("result-content");
+    const noMatch = document.getElementById("no-match");
+    const loader = document.getElementById("loader");
+
+    uploadBtn.addEventListener("click", async () => {
+      const file = fileInput.files[0];
+      if (!file) {
+        alert("Please select an image first.");
+        return;
+      }
+
+      loader.classList.remove("hidden");
+      resultBox.classList.add("hidden");
+      noMatch.classList.add("hidden");
+
+      const formData = new FormData();
+      formData.append("image", file);
+
+      try {
+        const response = await fetch("{% url 'match_person' %}", {
+          method: "POST",
+          body: formData,
+          headers: {
+            "X-CSRFToken": "{{ csrf_token }}"
+          }
+        });
+
+        const data = await response.json();
+        loader.classList.add("hidden");
+
+        if (data.match) {
+          resultBox.classList.remove("hidden");
+          resultContent.innerHTML = `
+            <div class="flex justify-center items-center w-full mt-8">
+              <div class="bg-white shadow-xl rounded-lg overflow-hidden max-w-2xl w-full">
+                <img src="${data.match.image_url}" alt="Matched Person" class="w-full h-96 object-cover" />
+
+                <div class="p-6">
+                  <h3 class="text-2xl font-bold text-green-600 mb-6 flex items-center justify-center">
+                    <svg class="w-6 h-6 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    Match Found
+                  </h3>
+
+                  <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left text-gray-900 bg-gray-100 border border-gray-300 rounded-lg overflow-hidden">
+                      <tbody>
+                        <tr class="border-b border-gray-300">
+                          <th class="px-4 py-3 bg-gray-200 font-semibold">Full Name</th>
+                          <td class="px-4 py-3">${data.match.name}</td>
+                        </tr>
+                        <tr class="border-b border-gray-300">
+                          <th class="px-4 py-3 bg-gray-200 font-semibold">Contact Info</th>
+                          <td class="px-4 py-3">${data.match.contact_info}</td>
+                        </tr>
+                        <tr class="border-b border-gray-300">
+                          <th class="px-4 py-3 bg-gray-200 font-semibold">Reporter Address</th>
+                          <td class="px-4 py-3">${data.match.reporter_address}</td>
+                        </tr>
+                        <tr class="border-b border-gray-300">
+                          <th class="px-4 py-3 bg-gray-200 font-semibold">Missing From</th>
+                          <td class="px-4 py-3">${data.match.missing_place_address}</td>
+                        </tr>
+                        <tr>
+                          <th class="px-4 py-3 bg-gray-200 font-semibold">Identity Details</th>
+                          <td class="px-4 py-3">${data.match.identity_details}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div class="mt-6 text-center">
+                    <button class="bg-personify-purple hover:bg-personify-purple/80 text-white py-2 px-6 rounded-lg transition duration-300">
+                      Contact Reporter
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        } else {
+          noMatch.classList.remove("hidden");
+        }
+      } catch (error) {
+        loader.classList.add("hidden");
+        alert("Something went wrong while uploading the image.");
+      }
+    });
+  </script>
+</body>
+</html>

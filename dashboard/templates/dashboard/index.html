@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .bg-personify-purple {
+      background-color: #6c4fef;
+    }
+
+    .bg-personify-soft-purple {
+      background-color: #d4c4ff;
+    }
+
+    .bg-personify-dark-purple {
+      background-color: #4a2db1;
+    }
+
+    .gradient-bg {
+      background: linear-gradient(to bottom right, #d4c4ff, #6c4fef);
+    }
+
+    .card-img {
+      background-size: cover;         /* Fill the box while preserving aspect ratio */
+      background-position: center;    /* Center the image */
+      background-repeat: no-repeat;   /* Prevent repeating if image is smaller */
+      width: 100%;
+      height: 200px;                  /* Adjust as needed */
+      border-radius: 0.5rem;          /* Match your Tailwind rounded-lg */
+    }
+    
+  </style>
+</head>
+
+<body class="min-h-screen gradient-bg flex flex-col">
+  <!-- Header -->
+  <nav class="bg-personify-purple p-4 text-white sticky top-0 z-50">
+    <div class="container mx-auto flex items-center justify-between">
+      <!-- Logo/Title -->
+      <h1 class="text-lg font-semibold">Personify</h1>
+  
+      <!-- Logout Button (Right aligned) -->
+      <a href="{% url 'logout' %}" class="text-white p-2 rounded-lg hover:bg-personify-dark-purple focus:outline-none">
+        <i class="fa-solid fa-sign-out-alt text-white"></i>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Content Section -->
+  <div class="w-full max-w-4xl mx-auto mt-4 p-4">
+
+<div class="space-y-8">
+  <!-- Card 1: Active Cases -->
+  <div class="bg-white p-8 rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300 ease-in-out">
+    <div class="flex justify-center mb-4 text-personify-purple text-5xl">
+      <i class="fas fa-search-location"></i>
+    </div>
+    <h3 class="text-3xl font-semibold text-gray-800 text-center">Active Cases</h3>
+    <p class="text-sm text-gray-400 text-center mt-2">Find missing persons using facial recognition</p>
+    <p class="text-sm text-gray-600 text-center mt-1">Upload a photo to search for matches in our database.</p>
+    <button class="mt-6 w-full bg-personify-purple text-white py-2 px-4 rounded-lg hover:bg-personify-dark-purple focus:outline-none focus:ring-2 focus:ring-personify-purple">
+      <a href="{% url 'match_person' %}" >
+        <i class="fas fa-search-plus mr-2"></i> Find
+      </a>
+      
+    </button>
+  </div>
+
+  <!-- Card 2: Add Missing Person -->
+  <div class="bg-white p-8 rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300 ease-in-out">
+    <div class="flex justify-center mb-4 text-personify-purple text-5xl">
+      <i class="fas fa-user-plus"></i>
+    </div>
+    <h3 class="text-3xl font-semibold text-gray-800 text-center">Add Missing Person</h3>
+    <p class="text-sm text-gray-400 text-center mt-2">Register someone who's missing</p>
+    <p class="text-sm text-gray-600 text-center mt-1">Add their info and photo to help others find them.</p>
+    <button class="mt-6 w-full bg-personify-purple text-white py-2 px-4 rounded-lg hover:bg-personify-dark-purple focus:outline-none focus:ring-2 focus:ring-personify-purple">
+      <a href="{% url 'add_missing' %}">
+        <i class="fas fa-user-plus mr-2"></i> Add
+      </a>
+    </button>
+  </div>
+</div>
+
+
+
+
+  </div>
+
+
+</body>
+
+</html>

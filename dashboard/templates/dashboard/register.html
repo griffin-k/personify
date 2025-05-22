@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    /* Custom Colors */
+    .bg-personify-purple {
+      background-color: #6c4fef;
+    }
+
+    .bg-personify-soft-purple {
+      background-color: #d4c4ff;
+    }
+
+    .bg-personify-dark-purple {
+      background-color: #5a38a1;
+    }
+
+    /* Gradient background */
+    .gradient-bg {
+      background: linear-gradient(to bottom right, #d4c4ff, #6c4fef);
+    }
+  </style>
+</head>
+<body class="min-h-screen gradient-bg flex items-center justify-center p-4">
+  <div class="w-full max-w-md animate-fade-in">
+    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+      <div class="text-center p-6">
+        <div class="flex justify-center mb-4">
+          <div class="h-16 w-16 rounded-full bg-personify-purple text-white flex items-center justify-center">
+            <i class="fas fa-user text-2xl"></i>
+          </div>
+        </div>
+        <h2 class="text-2xl font-bold">Create an Account</h2>
+        <p class="text-sm text-gray-500">Sign up to start using Personify</p>
+        
+        <!-- Display error messages -->
+        {% if messages %}
+          <div id="errorMessage" class="mt-4 text-red-500 text-sm">
+            {% for message in messages %}
+              <p>{{ message }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+      <form action="{% url 'register' %}" method="POST" class="p-6 space-y-4">
+        {% csrf_token %}
+        
+        <!-- Email Field -->
+        <div class="space-y-2">
+          <label for="email" class="block text-sm font-medium">Email</label>
+          <div class="relative">
+            <input id="email" type="email" name="email" placeholder="you@example.com" required
+              class="pl-10 w-full py-2 px-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-personify-purple">
+            <i class="fas fa-envelope absolute left-3 top-2.5 text-gray-400"></i>
+          </div>
+        </div>
+
+        <!-- Password Field -->
+        <div class="space-y-2">
+          <label for="password" class="block text-sm font-medium">Password</label>
+          <div class="relative">
+            <input id="password" type="password" name="password" placeholder="••••••••" required
+              class="pl-10 pr-10 w-full py-2 px-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-personify-purple">
+            <i class="fas fa-lock absolute left-3 top-2.5 text-gray-400"></i>
+            <i id="togglePassword" class="fas fa-eye absolute right-3 top-2.5 text-gray-400 cursor-pointer"></i>
+          </div>
+        </div>
+
+        <!-- Confirm Password Field -->
+        <div class="space-y-2">
+          <label for="confirmPassword" class="block text-sm font-medium">Confirm Password</label>
+          <div class="relative">
+            <input id="confirmPassword" type="password" name="confirmPassword" placeholder="••••••••" required
+              class="pl-10 pr-10 w-full py-2 px-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-personify-purple">
+            <i class="fas fa-lock absolute left-3 top-2.5 text-gray-400"></i>
+            <i id="toggleConfirmPassword" class="fas fa-eye absolute right-3 top-2.5 text-gray-400 cursor-pointer"></i>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit"
+        class="w-full bg-personify-purple hover:bg-personify-dark-purple text-white py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-personify-purple">
+        Sign Up
+        <i class="fas fa-arrow-right ml-2"></i> <!-- Font Awesome arrow icon -->
+        </button>
+
+      </form>
+      <div class="text-center pb-6">
+        <p class="text-sm text-gray-500">Already have an account? 
+          <a href="{% url 'login' %}" class="text-personify-purple hover:underline font-medium">Log In</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Password Toggle Script -->
+  <script>
+    // Password visibility toggle for 'password' field
+    const passwordInput = document.getElementById('password');
+    const togglePassword = document.getElementById('togglePassword');
+    
+    togglePassword.addEventListener('click', () => {
+      const isPassword = passwordInput.type === 'password';
+      passwordInput.type = isPassword ? 'text' : 'password';
+      togglePassword.classList.toggle('fa-eye');
+      togglePassword.classList.toggle('fa-eye-slash');
+    });
+
+    // Password visibility toggle for 'confirmPassword' field
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+    
+    toggleConfirmPassword.addEventListener('click', () => {
+      const isConfirmPassword = confirmPasswordInput.type === 'password';
+      confirmPasswordInput.type = isConfirmPassword ? 'text' : 'password';
+      toggleConfirmPassword.classList.toggle('fa-eye');
+      toggleConfirmPassword.classList.toggle('fa-eye-slash');
+    });
+
+    // Auto-dismiss the error message after 2 seconds
+    const errorMessage = document.getElementById('errorMessage');
+    if (errorMessage) {
+      setTimeout(() => {
+        errorMessage.style.display = 'none';
+      }, 2000);  // Hide after 2 seconds
+    }
+  </script>
+</body>
+</html>

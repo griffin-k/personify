@@ -1,0 +1,125 @@
+<!-- add_missing.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add Missing Person</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- ✅ Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+ 
+  <style>
+    .bg-personify-purple { background-color: #6c4fef; }
+    .bg-personify-dark-purple { background-color: #4a2db1; }
+    .gradient-bg { background: linear-gradient(to bottom right, #d4c4ff, #6c4fef); }
+  </style>
+</head>
+<body class="min-h-screen gradient-bg flex flex-col">
+    <nav class="bg-personify-purple p-4 text-white sticky top-0 z-50">
+        <div class="container mx-auto flex items-center justify-between">
+          <!-- Logo/Title -->
+          <h1 class="text-lg font-semibold">Personify</h1>
+      
+          <!-- Logout Button (Right aligned) -->
+          <a href="{% url 'logout' %}" class="text-white p-2 rounded-lg hover:bg-personify-dark-purple focus:outline-none">
+            <i class="fa-solid fa-sign-out-alt text-white"></i>
+          </a>
+        </div>
+      </nav>
+
+  <main class="container mx-auto px-4 py-8 max-w-4xl flex-grow">
+    <div class="mb-8 text-center">
+      <h1 class="text-3xl font-bold mb-2 text-gray-800">Add Missing Person</h1>
+      <p class="text-gray-600">Please provide detailed information to help locate the missing person</p>
+    </div>
+
+    <div class="bg-white shadow-lg rounded-lg p-6">
+        <h2 class="text-xl font-semibold text-center mb-4">Missing Person Details</h2>
+
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <!-- Image Upload Section -->
+        <div class="space-y-4">
+          <label for="image" class="flex items-center gap-2 cursor-pointer">
+            <i class="fa-solid fa-image"></i>
+            Upload Image
+          </label>
+          <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+            <div id="image-preview">
+              <img id="preview-img" src="" alt="Preview" class="mx-auto max-h-60 rounded-md hidden" />
+              <p id="no-image-msg" class="text-sm text-gray-500 mb-2">
+                Drag and drop an image, or click to browse
+              </p>
+              <input type="file" id="image" name="image" accept="image/*" class="hidden" />
+              <button type="button" id="select-image-btn" class="w-full bg-personify-purple text-white py-2 px-4 rounded hover:bg-personify-dark-purple">
+                <i class="fa-solid fa-upload mr-2"></i>Select Image
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Full Name -->
+        <div class="space-y-4">
+          <label for="full_name" class="flex items-center mt-4 gap-2"><i class="fa-solid fa-user"></i> Full Name</label>
+          <input type="text" id="full_name" name="full_name" placeholder="Enter full name of missing person" class="w-full p-3 border border-gray-300 rounded-lg" required />
+        </div>
+
+        <!-- Contact Information -->
+        <div class="space-y-4">
+          <label for="contact_info" class="flex items-center mt-4 gap-2"><i class="fa-solid fa-phone"></i> Contact Information</label>
+          <input type="text" id="contact_info" name="contact_info" placeholder="Phone number or email" class="w-full p-3 border border-gray-300 rounded-lg" required />
+        </div>
+
+        <!-- Reporter Address -->
+        <div class="space-y-4">
+          <label for="reporter_address" class="flex items-center mt-4 gap-2"><i class="fa-solid fa-map-marker-alt"></i> Your Address (Reporter)</label>
+          <input type="text" id="reporter_address" name="reporter_address" placeholder="Enter your address" class="w-full p-3 border border-gray-300 rounded-lg" required />
+        </div>
+
+        <!-- Missing Place Address -->
+        <div class="space-y-4">
+          <label for="missing_place_address" class="flex items-center mt-4 gap-2"><i class="fa-solid fa-location-dot"></i> Missing Place Address</label>
+          <input type="text" id="missing_place_address" name="missing_place_address" placeholder="Where was the person last seen" class="w-full p-3 border border-gray-300 rounded-lg" required />
+        </div>
+
+        <!-- Identity Details -->
+        <div class="space-y-4">
+          <label for="identity_details" class="flex items-center mt-4 gap-2"><i class="fa-solid fa-id-card"></i> Identity Details</label>
+          <textarea id="identity_details" name="identity_details" placeholder="Describe identifying marks, clothing, etc." class="w-full p-3 border border-gray-300 rounded-lg" required rows="4"></textarea>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="w-full bg-personify-purple text-white py-3 px-4 rounded-lg hover:bg-personify-dark-purple mt-6">
+          <i class="fa-solid fa-paper-plane mr-2"></i>Submit Case
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    const imageInput = document.getElementById("image");
+    const previewImg = document.getElementById("preview-img");
+    const noImageMsg = document.getElementById("no-image-msg");
+
+    imageInput.addEventListener("change", function () {
+      const file = imageInput.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          previewImg.src = reader.result;
+          previewImg.classList.remove("hidden");
+          noImageMsg.classList.add("hidden");
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    document.getElementById("select-image-btn").addEventListener("click", () => {
+      imageInput.click();
+    });
+  </script>
+</body>
+</html>
