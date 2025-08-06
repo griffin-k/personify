@@ -1,0 +1,211 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Personify - Advanced facial recognition system for finding missing persons">
+    <title>{% block title %}Personify{% endblock %}</title>
+    
+    <!-- Preconnect to external resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plq7G5tGm0rU+1SPhVotteLpBERwTkw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="{% static 'dashboard/css/modern-style.css' %}">
+    
+    <!-- Additional page-specific styles -->
+    {% block extra_css %}{% endblock %}
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>👤</text></svg>">
+</head>
+<body>
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="visually-hidden">Skip to main content</a>
+    
+    <!-- Navigation -->
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
+        <div class="container">
+            <div class="flex items-center justify-between">
+                <!-- Brand/Logo -->
+                <a href="{% url 'dashboard' %}" class="navbar-brand" aria-label="Personify Home">
+                    <i class="fas fa-user-shield" aria-hidden="true"></i>
+                    Personify
+                </a>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-1">
+                    {% if user.is_authenticated %}
+                        <ul class="navbar-nav" role="menubar">
+                            <li role="none">
+                                <a href="{% url 'dashboard' %}" class="nav-link" role="menuitem">
+                                    <i class="fas fa-home" aria-hidden="true"></i>
+                                    Dashboard
+                                </a>
+                            </li>
+                            <li role="none">
+                                <a href="{% url 'match_person' %}" class="nav-link" role="menuitem">
+                                    <i class="fas fa-search" aria-hidden="true"></i>
+                                    Find
+                                </a>
+                            </li>
+                            <li role="none">
+                                <a href="{% url 'add_missing' %}" class="nav-link" role="menuitem">
+                                    <i class="fas fa-user-plus" aria-hidden="true"></i>
+                                    Add Missing
+                                </a>
+                            </li>
+                        </ul>
+                        
+                        <!-- User Menu -->
+                        <div class="flex items-center space-x-2 ml-4 pl-4 border-l border-gray-200">
+                            <span class="text-sm text-gray-600">Hello, {{ user.username }}</span>
+                            <a href="{% url 'logout' %}" class="btn btn-outline btn-sm" title="Logout" aria-label="Logout">
+                                <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                                Logout
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="flex items-center space-x-2">
+                            <a href="{% url 'login' %}" class="btn btn-outline btn-sm">
+                                <i class="fas fa-sign-in-alt" aria-hidden="true"></i>
+                                Login
+                            </a>
+                            <a href="{% url 'register' %}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-user-plus" aria-hidden="true"></i>
+                                Register
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button class="mobile-menu-toggle md:hidden" aria-label="Toggle mobile menu" aria-expanded="false">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <!-- Mobile Navigation -->
+            <div class="mobile-menu md:hidden">
+                {% if user.is_authenticated %}
+                    <div class="py-4 space-y-2">
+                        <a href="{% url 'dashboard' %}" class="nav-link block">
+                            <i class="fas fa-home mr-2" aria-hidden="true"></i>
+                            Dashboard
+                        </a>
+                        <a href="{% url 'match_person' %}" class="nav-link block">
+                            <i class="fas fa-search mr-2" aria-hidden="true"></i>
+                            Find Person
+                        </a>
+                        <a href="{% url 'add_missing' %}" class="nav-link block">
+                            <i class="fas fa-user-plus mr-2" aria-hidden="true"></i>
+                            Add Missing Person
+                        </a>
+                        <hr class="border-gray-200 my-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-600">{{ user.username }}</span>
+                            <a href="{% url 'logout' %}" class="btn btn-outline btn-sm">
+                                <i class="fas fa-sign-out-alt mr-1" aria-hidden="true"></i>
+                                Logout
+                            </a>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="py-4 space-y-2">
+                        <a href="{% url 'login' %}" class="btn btn-outline w-full">
+                            <i class="fas fa-sign-in-alt mr-2" aria-hidden="true"></i>
+                            Login
+                        </a>
+                        <a href="{% url 'register' %}" class="btn btn-primary w-full">
+                            <i class="fas fa-user-plus mr-2" aria-hidden="true"></i>
+                            Register
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main id="main-content" class="flex-1">
+        <!-- Page-specific content -->
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-auto no-print" role="contentinfo">
+        <div class="container">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Brand Section -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4 flex items-center">
+                        <i class="fas fa-user-shield mr-2" aria-hidden="true"></i>
+                        Personify
+                    </h3>
+                    <p class="text-gray-300 text-sm leading-relaxed">
+                        Advanced facial recognition technology helping reunite families and find missing persons through cutting-edge AI.
+                    </p>
+                </div>
+                
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-md font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="{% url 'dashboard' %}" class="text-gray-300 hover:text-white transition-colors">Dashboard</a></li>
+                        <li><a href="{% url 'match_person' %}" class="text-gray-300 hover:text-white transition-colors">Find Person</a></li>
+                        <li><a href="{% url 'add_missing' %}" class="text-gray-300 hover:text-white transition-colors">Report Missing</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Contact Info -->
+                <div>
+                    <h4 class="text-md font-semibold mb-4">Support</h4>
+                    <div class="space-y-2 text-sm text-gray-300">
+                        <p><i class="fas fa-envelope mr-2" aria-hidden="true"></i> support@personify.com</p>
+                        <p><i class="fas fa-phone mr-2" aria-hidden="true"></i> +1 (555) 123-4567</p>
+                        <p><i class="fas fa-clock mr-2" aria-hidden="true"></i> 24/7 Emergency Support</p>
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="border-gray-700 my-6">
+            
+            <div class="flex flex-col md:flex-row justify-between items-center text-sm text-gray-400">
+                <p>&copy; {% now "Y" %} Personify. All rights reserved.</p>
+                <div class="flex space-x-4 mt-2 md:mt-0">
+                    <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+                    <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+                    <a href="#" class="hover:text-white transition-colors">Help</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script src="{% static 'dashboard/js/modern-app.js' %}"></script>
+    
+    <!-- Additional page-specific scripts -->
+    {% block extra_js %}{% endblock %}
+    
+    <!-- Django Messages Display -->
+    {% if messages %}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                {% for message in messages %}
+                    showNotification(
+                        '{{ message|escapejs }}', 
+                        '{% if message.tags %}{{ message.tags }}{% else %}info{% endif %}'
+                    );
+                {% endfor %}
+            });
+        </script>
+    {% endif %}
+</body>
+</html>
